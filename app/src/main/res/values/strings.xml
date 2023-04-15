@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VK API Compose</string>
+    <string name="teplate_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
 </resources>
