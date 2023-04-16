@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">VK API Compose</string>
     <string name="teplate_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="navigation_item_main">Main</string>
+    <string name="navigation_item_favourite">Favourite</string>
+    <string name="navigation_item_profile">Profile</string>
 </resources>

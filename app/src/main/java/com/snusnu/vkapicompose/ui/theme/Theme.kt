@@ -26,6 +26,7 @@ private val LightColorPalette = lightColors(
     onSecondary = Black500,
 )
 
+
 @Composable
 fun VKAPIComposeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
