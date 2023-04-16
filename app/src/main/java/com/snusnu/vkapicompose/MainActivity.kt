@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.snusnu.vkapicompose.ui.theme.CardPost
+import com.snusnu.vkapicompose.ui.theme.MainScreen
 import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colors.background)
                         .padding(8.dp)
                 ) {
-                    CardPost()
+                    MainScreen()
                 }
             }
         }
