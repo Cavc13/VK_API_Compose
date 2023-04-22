@@ -1,56 +1,46 @@
 package com.snusnu.vkapicompose.ui.theme.screens
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
+import com.snusnu.vkapicompose.ui.domain.FeedPost
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
-    val snackBarHostState = remember {
-        SnackbarHostState()
+    val feedPost = remember {
+        mutableStateOf(FeedPost())
     }
 
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
-        },
-        floatingActionButton = {
-            MainFloatingActionButton(snackBarHostState)
-        },
         bottomBar = {
             MainBottomNavigation()
         }
     ) {
-    }
-}
-
-@Composable
-private fun MainFloatingActionButton(snackBarHostState: SnackbarHostState) {
-    val scope = rememberCoroutineScope()
-    var fabIsVisible: Boolean by remember {
-        mutableStateOf(true)
-    }
-
-    if (fabIsVisible) {
-        FloatingActionButton(
-            onClick = {
-                scope.launch {
-                    val action  = snackBarHostState.showSnackbar(
-                        message = "This is snackBar",
-                        actionLabel = "Hide FAB",
-                        duration = SnackbarDuration.Long
-                    )
-                    if (action == SnackbarResult.ActionPerformed) {
-                        fabIsVisible = false
+        CardPost(
+            modifier = Modifier.padding(8.dp),
+            feedPost = feedPost.value,
+            onStatisticItemClickListener = { newItem ->
+                val oldStatistics = feedPost.value.statistics
+                val newStatistics = oldStatistics.toMutableList().apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        replaceAll { oldItem ->
+                            if (oldItem.type == newItem.type) {
+                                oldItem.copy(count = oldItem.count + 1)
+                            } else {
+                                oldItem
+                            }
+                        }
                     }
                 }
+                feedPost.value = feedPost.value.copy(statistics = newStatistics)
             }
-        ) {
-            Icon(Icons.Filled.Favorite, contentDescription = null)
-        }
+        )
     }
 }
 

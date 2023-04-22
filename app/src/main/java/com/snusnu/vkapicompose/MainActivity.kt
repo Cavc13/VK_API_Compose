@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
-import com.snusnu.vkapicompose.ui.theme.screens.instagram_screen.InstagramProfileCard
-import com.snusnu.vkapicompose.ui.theme.screens.instagram_screen.InstagramViewModel
+import com.snusnu.vkapicompose.ui.theme.screens.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val instagramViewModel = ViewModelProvider(this)[InstagramViewModel::class.java]
         setContent {
             VKAPIComposeTheme {
                 Box(
@@ -27,7 +24,7 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colors.background)
                         .padding(8.dp)
                 ) {
-                    InstagramProfileCard(instagramViewModel)
+                    MainScreen()
                 }
             }
         }

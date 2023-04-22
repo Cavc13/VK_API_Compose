@@ -1,7 +1,7 @@
 package com.snusnu.vkapicompose.ui.theme.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
@@ -16,52 +16,59 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
+import com.snusnu.vkapicompose.ui.domain.FeedPost
+import com.snusnu.vkapicompose.ui.domain.StatisticItem
+import com.snusnu.vkapicompose.ui.domain.StatisticType
 
 @Composable
-fun CardPost() {
-    Card {
+fun CardPost(
+    modifier: Modifier = Modifier,
+    feedPost: FeedPost,
+    onStatisticItemClickListener: (StatisticItem) -> Unit
+) {
+    Card(
+        modifier = modifier
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-                .padding(8.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
-            PostHeader()
+            PostHeader(feedPost)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.teplate_text),
+                text = feedPost.contentText,
                 color = MaterialTheme.colors.onPrimary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Image(
-                painter = painterResource(id = R.drawable.post_content_image),
-                contentDescription = "post image",
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.FillBounds
+                    .fillMaxWidth()
+                    .height(200.dp),
+                painter = painterResource(id = feedPost.contentImageResId),
+                contentDescription = "post image",
+                contentScale = ContentScale.FillWidth
             )
             Spacer(modifier = Modifier.height(8.dp))
-            PostStatistics()
+            PostStatistics(
+                statistics = feedPost.statistics,
+                onItemClickListener = onStatisticItemClickListener
+            )
         }
     }
 }
 
 @Composable
-private fun PostHeader() {
+private fun PostHeader(
+    feedPost: FeedPost
+) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.post_community_thumbnail),
+            painter = painterResource(id = feedPost.avatarResId),
             contentDescription = "avatar of community",
             modifier = Modifier
                 .size(48.dp)
@@ -72,12 +79,12 @@ private fun PostHeader() {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "/dev/null",
+                text = feedPost.communityName,
                 color = MaterialTheme.colors.onPrimary
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "14:00",
+                text = feedPost.publicationDate,
                 color = MaterialTheme.colors.onSecondary
             )
         }
@@ -90,42 +97,69 @@ private fun PostHeader() {
 }
 
 @Composable
-private fun PostStatistics() {
+private fun PostStatistics(
+    statistics: List<StatisticItem>,
+    onItemClickListener: (StatisticItem) -> Unit
+) {
     Row {
         Row(
             modifier = Modifier.weight(1f)
         ) {
+            val viewsItem = statistics.getItemByType(StatisticType.VIEWS)
             IconWithText(
                 iconResId = R.drawable.ic_eye,
-                text = "916"
+                text = viewsItem.count.toString(),
+                onItemClickListener = {
+                    onItemClickListener(viewsItem)
+                }
             )
         }
         Row(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val shareItem = statistics.getItemByType(StatisticType.SHARES)
             IconWithText(
                 iconResId = R.drawable.ic_share,
-                text = "7"
+                text = shareItem.count.toString(),
+                onItemClickListener = {
+                    onItemClickListener(shareItem)
+                }
             )
+            val commentItem = statistics.getItemByType(StatisticType.COMMENTS)
             IconWithText(
                 iconResId = R.drawable.ic_comment,
-                text = "23"
+                text = commentItem.count.toString(),
+                onItemClickListener = {
+                    onItemClickListener(commentItem)
+                }
             )
+            val likeItem = statistics.getItemByType(StatisticType.LIKES)
             IconWithText(
                 iconResId = R.drawable.ic_like,
-                text = "54"
+                text = likeItem.count.toString(),
+                onItemClickListener = {
+                    onItemClickListener(likeItem)
+                }
             )
         }
     }
 }
 
+private fun List<StatisticItem>.getItemByType(type: StatisticType): StatisticItem {
+    return this.find { it.type == type } ?: throw IllegalAccessException("This type is unknown")
+}
+
 @Composable
 private fun IconWithText(
     iconResId: Int,
-    text: String
+    text: String,
+    onItemClickListener: () -> Unit
 ) {
     Row(
+        modifier = Modifier.clickable {
+            onItemClickListener()
+        },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -140,21 +174,5 @@ private fun IconWithText(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onSecondary
         )
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewLight() {
-    VKAPIComposeTheme(darkTheme = false) {
-        CardPost()
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewDark() {
-    VKAPIComposeTheme(darkTheme = true) {
-        CardPost()
     }
 }
