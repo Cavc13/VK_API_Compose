@@ -3,6 +3,7 @@ package com.snusnu.vkapicompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,9 @@ import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 import com.snusnu.vkapicompose.ui.theme.screens.MainScreen
 
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,7 +28,7 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colors.background)
                         .padding(8.dp)
                 ) {
-                    MainScreen()
+                    MainScreen(mainViewModel)
                 }
             }
         }
