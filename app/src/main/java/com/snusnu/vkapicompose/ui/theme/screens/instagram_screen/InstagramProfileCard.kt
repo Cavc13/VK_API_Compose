@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,7 +70,7 @@ fun InstagramProfileCard(
                 text = "www.facebook.com/emotional_health",
                 fontSize = 14.sp
             )
-            FollowButton(isFollowed = isFollowed.value) {
+            FollowButton(isFollowed = isFollowed) {
                 viewModel.changeFollowingStatus()
             }
         }
@@ -78,7 +79,7 @@ fun InstagramProfileCard(
 
 @Composable
 private fun FollowButton(
-    isFollowed: Boolean,
+    isFollowed: State<Boolean>,
     clickListener: () -> Unit
 ) {
     Button(
@@ -86,7 +87,7 @@ private fun FollowButton(
             clickListener()
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (!isFollowed) {
+            backgroundColor = if (!isFollowed.value) {
                 MaterialTheme.colors.onBackground
             } else {
                 MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
@@ -94,7 +95,7 @@ private fun FollowButton(
         )
     ) {
         Text(
-            text = if (isFollowed) "Unfollow" else "Follow",
+            text = if (isFollowed.value) "Unfollow" else "Follow",
             color = MaterialTheme.colors.primary
         )
     }
