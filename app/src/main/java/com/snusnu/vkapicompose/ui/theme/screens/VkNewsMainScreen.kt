@@ -3,10 +3,7 @@ package com.snusnu.vkapicompose.ui.theme.screens
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 
@@ -33,11 +30,11 @@ fun MainScreen() {
 @Composable
 private fun MainFloatingActionButton(snackBarHostState: SnackbarHostState) {
     val scope = rememberCoroutineScope()
-    val fabIsVisible = remember {
+    var fabIsVisible: Boolean by remember {
         mutableStateOf(true)
     }
 
-    if (fabIsVisible.value) {
+    if (fabIsVisible) {
         FloatingActionButton(
             onClick = {
                 scope.launch {
@@ -47,7 +44,7 @@ private fun MainFloatingActionButton(snackBarHostState: SnackbarHostState) {
                         duration = SnackbarDuration.Long
                     )
                     if (action == SnackbarResult.ActionPerformed) {
-                        fabIsVisible.value = false
+                        fabIsVisible = false
                     }
                 }
             }
