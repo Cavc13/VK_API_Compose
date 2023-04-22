@@ -12,7 +12,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen() {
-    val snackBarHostState = SnackbarHostState()
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
@@ -24,7 +27,6 @@ fun MainScreen() {
             MainBottomNavigation()
         }
     ) {
-
     }
 }
 
