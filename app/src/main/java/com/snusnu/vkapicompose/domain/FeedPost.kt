@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.ui.domain
+package com.snusnu.vkapicompose.domain
 
 import com.snusnu.vkapicompose.R
 

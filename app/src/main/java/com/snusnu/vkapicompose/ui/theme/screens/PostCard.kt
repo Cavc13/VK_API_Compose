@@ -19,15 +19,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.ui.domain.FeedPost
-import com.snusnu.vkapicompose.ui.domain.StatisticItem
-import com.snusnu.vkapicompose.ui.domain.StatisticType
+import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.StatisticItem
+import com.snusnu.vkapicompose.domain.StatisticType
 
 @Composable
 fun CardPost(
     modifier: Modifier = Modifier,
     feedPost: FeedPost,
-    onStatisticItemClickListener: (StatisticItem) -> Unit
+    onViewItemClickListener: (StatisticItem) -> Unit,
+    onShareItemClickListener: (StatisticItem) -> Unit,
+    onCommentItemClickListener: (StatisticItem) -> Unit,
+    onLikeItemClickListener: (StatisticItem) -> Unit
 ) {
     Card(
         modifier = modifier
@@ -53,7 +56,10 @@ fun CardPost(
             Spacer(modifier = Modifier.height(8.dp))
             PostStatistics(
                 statistics = feedPost.statistics,
-                onItemClickListener = onStatisticItemClickListener
+                onViewItemClickListener = onViewItemClickListener,
+                onShareItemClickListener = onShareItemClickListener,
+                onCommentItemClickListener = onCommentItemClickListener,
+                onLikeItemClickListener = onLikeItemClickListener
             )
         }
     }
@@ -99,7 +105,10 @@ private fun PostHeader(
 @Composable
 private fun PostStatistics(
     statistics: List<StatisticItem>,
-    onItemClickListener: (StatisticItem) -> Unit
+    onViewItemClickListener: (StatisticItem) -> Unit,
+    onShareItemClickListener: (StatisticItem) -> Unit,
+    onCommentItemClickListener: (StatisticItem) -> Unit,
+    onLikeItemClickListener: (StatisticItem) -> Unit
 ) {
     Row {
         Row(
@@ -110,7 +119,7 @@ private fun PostStatistics(
                 iconResId = R.drawable.ic_eye,
                 text = viewsItem.count.toString(),
                 onItemClickListener = {
-                    onItemClickListener(viewsItem)
+                    onViewItemClickListener(viewsItem)
                 }
             )
         }
@@ -123,7 +132,7 @@ private fun PostStatistics(
                 iconResId = R.drawable.ic_share,
                 text = shareItem.count.toString(),
                 onItemClickListener = {
-                    onItemClickListener(shareItem)
+                    onShareItemClickListener(shareItem)
                 }
             )
             val commentItem = statistics.getItemByType(StatisticType.COMMENTS)
@@ -131,7 +140,7 @@ private fun PostStatistics(
                 iconResId = R.drawable.ic_comment,
                 text = commentItem.count.toString(),
                 onItemClickListener = {
-                    onItemClickListener(commentItem)
+                    onCommentItemClickListener(commentItem)
                 }
             )
             val likeItem = statistics.getItemByType(StatisticType.LIKES)
@@ -139,7 +148,7 @@ private fun PostStatistics(
                 iconResId = R.drawable.ic_like,
                 text = likeItem.count.toString(),
                 onItemClickListener = {
-                    onItemClickListener(likeItem)
+                    onLikeItemClickListener(likeItem)
                 }
             )
         }

@@ -1,45 +1,36 @@
 package com.snusnu.vkapicompose.ui.theme.screens
 
 import android.annotation.SuppressLint
-import android.os.Build
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.snusnu.vkapicompose.ui.domain.FeedPost
+import com.snusnu.vkapicompose.MainViewModel
+import com.snusnu.vkapicompose.domain.FeedPost
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
-    val feedPost = remember {
-        mutableStateOf(FeedPost())
-    }
+fun MainScreen(
+    mainViewModel: MainViewModel
+) {
 
     Scaffold(
         bottomBar = {
             MainBottomNavigation()
         }
     ) {
+        val feedPost = mainViewModel.feedPost.observeAsState(FeedPost())
+
         CardPost(
             modifier = Modifier.padding(8.dp),
             feedPost = feedPost.value,
-            onStatisticItemClickListener = { newItem ->
-                val oldStatistics = feedPost.value.statistics
-                val newStatistics = oldStatistics.toMutableList().apply {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        replaceAll { oldItem ->
-                            if (oldItem.type == newItem.type) {
-                                oldItem.copy(count = oldItem.count + 1)
-                            } else {
-                                oldItem
-                            }
-                        }
-                    }
-                }
-                feedPost.value = feedPost.value.copy(statistics = newStatistics)
-            }
+            onViewItemClickListener = mainViewModel::increaseCount,
+            onShareItemClickListener = mainViewModel::increaseCount,
+            onCommentItemClickListener = mainViewModel::increaseCount,
+            onLikeItemClickListener = mainViewModel::increaseCount
         )
     }
 }
