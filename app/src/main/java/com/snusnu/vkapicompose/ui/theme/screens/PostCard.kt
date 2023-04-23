@@ -19,17 +19,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.FeedPostModel
 import com.snusnu.vkapicompose.domain.StatisticItem
 import com.snusnu.vkapicompose.domain.StatisticType
 
 @Composable
 fun CardPost(
     modifier: Modifier = Modifier,
-    feedPost: FeedPost,
+    feedPostModel: FeedPostModel,
     onViewItemClickListener: (StatisticItem) -> Unit,
     onShareItemClickListener: (StatisticItem) -> Unit,
-    onCommentItemClickListener: (StatisticItem) -> Unit,
+    onCommentItemClickListener: ( StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit
 ) {
     Card(
@@ -38,10 +38,10 @@ fun CardPost(
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            PostHeader(feedPost)
+            PostHeader(feedPostModel)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = feedPost.contentText,
+                text = feedPostModel.contentText,
                 color = MaterialTheme.colors.onPrimary
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -49,17 +49,17 @@ fun CardPost(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                painter = painterResource(id = feedPost.contentImageResId),
+                painter = painterResource(id = feedPostModel.contentImageResId),
                 contentDescription = "post image",
                 contentScale = ContentScale.FillWidth
             )
             Spacer(modifier = Modifier.height(8.dp))
             PostStatistics(
-                statistics = feedPost.statistics,
+                statistics = feedPostModel.statistics,
                 onViewItemClickListener = onViewItemClickListener,
                 onShareItemClickListener = onShareItemClickListener,
                 onCommentItemClickListener = onCommentItemClickListener,
-                onLikeItemClickListener = onLikeItemClickListener
+                onLikeItemClickListener = onLikeItemClickListener,
             )
         }
     }
@@ -67,7 +67,7 @@ fun CardPost(
 
 @Composable
 private fun PostHeader(
-    feedPost: FeedPost
+    feedPost: FeedPostModel
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
