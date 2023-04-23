@@ -2,7 +2,8 @@ package com.snusnu.vkapicompose.domain
 
 import com.snusnu.vkapicompose.R
 
-data class FeedPost(
+data class FeedPostModel(
+    val id: Int = 0,
     val communityName: String = "/dev/null",
     val publicationDate: String = "14:00",
     val avatarResId: Int = R.drawable.post_community_thumbnail,
