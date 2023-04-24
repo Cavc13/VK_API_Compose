@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.ui.theme.screens
+package com.snusnu.vkapicompose.ui.theme.screens.home_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
