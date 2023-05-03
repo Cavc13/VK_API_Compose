@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.snusnu.vkapicompose.domain.FeedPostModel
 import com.snusnu.vkapicompose.domain.StatisticItem
+import com.snusnu.vkapicompose.ui.theme.screens.home_screen.HomeScreenState
 
 class MainViewModel : ViewModel() {
 
@@ -19,11 +20,15 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private val _feedPostModels = MutableLiveData<List<FeedPostModel>>(initList)
-    val feedPostModels: LiveData<List<FeedPostModel>> = _feedPostModels
+    private val initialState = HomeScreenState.Posts(initList)
+    private val _screenState = MutableLiveData<HomeScreenState>(initialState)
+    val screenState: LiveData<HomeScreenState> = _screenState
 
     fun increaseCount(feedPostModel: FeedPostModel, item: StatisticItem) {
-        val modifiedList = feedPostModels.value?.toMutableList() ?: throw IllegalAccessException()
+        val currentState = screenState.value
+        if (currentState !is HomeScreenState.Posts) return
+
+        val modifiedList = currentState.posts.toMutableList()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             modifiedList.replaceAll { feedPost ->
                 if (feedPost == feedPostModel) {
@@ -43,12 +48,15 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
-        _feedPostModels.value = modifiedList
+        _screenState.value = HomeScreenState.Posts(modifiedList)
     }
 
     fun deleteFeedPost(feedPostModel: FeedPostModel) {
-        val modifiedList = _feedPostModels.value?.toMutableList() ?: mutableListOf()
+        val currentState = screenState.value
+        if (currentState !is HomeScreenState.Posts) return
+
+        val modifiedList = currentState.posts.toMutableList()
         modifiedList.remove(feedPostModel)
-        _feedPostModels.value = modifiedList
+        _screenState.value = HomeScreenState.Posts(modifiedList)
     }
 }

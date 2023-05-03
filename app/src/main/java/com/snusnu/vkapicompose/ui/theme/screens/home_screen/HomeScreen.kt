@@ -14,75 +14,89 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.snusnu.vkapicompose.MainViewModel
-import com.snusnu.vkapicompose.domain.PostComment
+import com.snusnu.vkapicompose.domain.FeedPostModel
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     mainViewModel: MainViewModel,
     paddingValues: PaddingValues
 ) {
-    val feedPostModels = mainViewModel.feedPostModels.observeAsState(emptyList())
-    val comments = mutableListOf<PostComment>().apply {
-        repeat(20) {
-            add(
-                PostComment(id = it)
+    val screenState = mainViewModel.screenState.observeAsState(HomeScreenState.Initial)
+
+    when(val currentState = screenState.value) {
+        is HomeScreenState.Posts -> {
+            FeedPosts(
+                posts = currentState.posts,
+                mainViewModel = mainViewModel,
+                paddingValues = paddingValues
             )
         }
+        is HomeScreenState.Comments -> {
+            CommentScreen(feedPost = currentState.feedPost, comments = currentState.comments)
+        }
+        HomeScreenState.Initial -> {}
     }
-    CommentScreen(feedPost = feedPostModels.value[0], comments = comments)
-//    LazyColumn(
-//        modifier = Modifier.padding(paddingValues),
-//        contentPadding = PaddingValues(
-//            top = 16.dp,
-//            start = 8.dp,
-//            end = 8.dp,
-//            bottom = 16.dp
-//        ),
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
-//    ) {
-//        items(feedPostModels.value, key = { it.id }) { feedPostModel ->
-//            val dismissState = rememberDismissState()
-//            if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-//                mainViewModel.deleteFeedPost(feedPostModel)
-//            }
-//            SwipeToDismiss(
-//                modifier = Modifier.animateItemPlacement(),
-//                state = dismissState,
-//                directions = setOf(DismissDirection.EndToStart),
-//                background = {
-//                    Box(
-//                        modifier = Modifier
-//                            .padding(16.dp)
-//                            .background(Color.Red.copy(alpha = 0.5f))
-//                            .fillMaxSize(),
-//                        contentAlignment = Alignment.CenterEnd
-//                    ) {
-//                        Text(
-//                            modifier = Modifier.padding(16.dp),
-//                            text = "Delete post",
-//                            color = Color.White,
-//                            fontSize = 30.sp
-//                        )
-//                    }
-//                }
-//            ) {
-//                CardPost(
-//                    feedPostModel = feedPostModel,
-//                    onViewItemClickListener = {
-//                        mainViewModel.increaseCount(feedPostModel, it)
-//                    },
-//                    onShareItemClickListener = {
-//                        mainViewModel.increaseCount(feedPostModel, it)
-//                    },
-//                    onCommentItemClickListener = {
-//                        mainViewModel.increaseCount(feedPostModel, it)
-//                    },
-//                    onLikeItemClickListener = {
-//                        mainViewModel.increaseCount(feedPostModel, it)
-//                    },
-//                )
-//            }
-//        }
-//    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@Composable
+private fun FeedPosts(
+    posts: List<FeedPostModel>,
+    mainViewModel: MainViewModel,
+    paddingValues: PaddingValues
+) {
+    LazyColumn(
+        modifier = Modifier.padding(paddingValues),
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            start = 8.dp,
+            end = 8.dp,
+            bottom = 16.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(items = posts, key = { it.id }) { feedPostModel ->
+            val dismissState = rememberDismissState()
+            if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+                mainViewModel.deleteFeedPost(feedPostModel)
+            }
+            SwipeToDismiss(
+                modifier = Modifier.animateItemPlacement(),
+                state = dismissState,
+                directions = setOf(DismissDirection.EndToStart),
+                background = {
+                    Box(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .background(Color.Red.copy(alpha = 0.5f))
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = "Delete post",
+                            color = Color.White,
+                            fontSize = 30.sp
+                        )
+                    }
+                }
+            ) {
+                CardPost(
+                    feedPostModel = feedPostModel,
+                    onViewItemClickListener = {
+                        mainViewModel.increaseCount(feedPostModel, it)
+                    },
+                    onShareItemClickListener = {
+                        mainViewModel.increaseCount(feedPostModel, it)
+                    },
+                    onCommentItemClickListener = {
+                        mainViewModel.increaseCount(feedPostModel, it)
+                    },
+                    onLikeItemClickListener = {
+                        mainViewModel.increaseCount(feedPostModel, it)
+                    },
+                )
+            }
+        }
+    }
 }
