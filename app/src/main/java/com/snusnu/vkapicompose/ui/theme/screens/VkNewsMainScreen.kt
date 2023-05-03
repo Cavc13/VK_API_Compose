@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.navigation.AppNavGraph
+import com.snusnu.vkapicompose.navigation.Screen
 import com.snusnu.vkapicompose.navigation.rememberNavigationState
 import com.snusnu.vkapicompose.ui.theme.screens.home_screen.CommentScreen
 import com.snusnu.vkapicompose.ui.theme.screens.home_screen.HomeScreen
@@ -59,22 +60,22 @@ fun MainScreen() {
     ) { paddingValues ->
         AppNavGraph(
             navHostController = navigationState.navHostController,
-            homeScreenContent = {
-                if (commentsToPost.value == null) {
-                    HomeScreen(
-                        paddingValues = paddingValues,
-                        onCommentsClickListener = {
-                            commentsToPost.value = it
-                        }
-                    )
-                } else {
-                    CommentScreen(
-                        onBackPressed = {
-                            commentsToPost.value = null
-                        },
-                        feedPost = commentsToPost.value!!
-                    )
-                }
+            newsFeedScreenContent = {
+                HomeScreen(
+                    paddingValues = paddingValues,
+                    onCommentsClickListener = {
+                        commentsToPost.value = it
+                        navigationState.navigateTo(Screen.Comments.route)
+                    }
+                )
+            },
+            commentsScreenContent = {
+                CommentScreen(
+                    onBackPressed = {
+                        commentsToPost.value = null
+                    },
+                    feedPost = commentsToPost.value!!
+                )
             },
             favoriteScreenContent = {
                 NumberCounter("Favourite")
