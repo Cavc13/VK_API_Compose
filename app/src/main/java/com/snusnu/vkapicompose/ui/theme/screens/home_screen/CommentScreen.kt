@@ -16,15 +16,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.snusnu.vkapicompose.CommentsViewModel
+import com.snusnu.vkapicompose.CommentsViewModelFactory
+import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
 import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 
 @Composable
 fun CommentScreen(
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    feedPost: FeedPost
 ) {
 
-    val viewModel: CommentsViewModel = viewModel()
+    val viewModel: CommentsViewModel = viewModel(
+        factory = CommentsViewModelFactory(feedPost)
+    )
     val screenState = viewModel.screenState.observeAsState(initial = CommentsScreenState.Initial)
     val currentState = screenState.value
     if (currentState is CommentsScreenState.Comments) {
