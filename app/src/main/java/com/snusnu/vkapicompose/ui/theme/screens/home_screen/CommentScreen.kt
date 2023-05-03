@@ -13,14 +13,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.snusnu.vkapicompose.domain.FeedPostModel
+import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
 import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 
 @Composable
 fun CommentScreen(
-    feedPost: FeedPostModel,
-    comments: List<PostComment>
+    feedPost: FeedPost,
+    comments: List<PostComment>,
+    onBackPressed: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -29,7 +30,9 @@ fun CommentScreen(
                     Text(text = "Comments for FeedPost Id: ${feedPost.id}")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        onBackPressed()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = null
