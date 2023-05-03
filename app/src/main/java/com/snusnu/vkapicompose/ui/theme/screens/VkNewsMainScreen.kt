@@ -11,17 +11,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.snusnu.vkapicompose.MainViewModel
+import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.navigation.AppNavGraph
 import com.snusnu.vkapicompose.navigation.rememberNavigationState
+import com.snusnu.vkapicompose.ui.theme.screens.home_screen.CommentScreen
 import com.snusnu.vkapicompose.ui.theme.screens.home_screen.HomeScreen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen(
-    mainViewModel: MainViewModel
-) {
+fun MainScreen() {
     val navigationState = rememberNavigationState()
+    val commentsToPost: MutableState<FeedPost?> = remember {
+        mutableStateOf(null)
+    }
 
     Scaffold(
         bottomBar = {
@@ -58,7 +60,18 @@ fun MainScreen(
         AppNavGraph(
             navHostController = navigationState.navHostController,
             homeScreenContent = {
-                HomeScreen(mainViewModel = mainViewModel, paddingValues = paddingValues)
+                if (commentsToPost.value == null) {
+                    HomeScreen(
+                        paddingValues = paddingValues,
+                        onCommentsClickListener = {
+                            commentsToPost.value = it
+                        }
+                    )
+                } else {
+                    CommentScreen {
+                        commentsToPost.value = null
+                    }
+                }
             },
             favoriteScreenContent = {
                 NumberCounter("Favourite")

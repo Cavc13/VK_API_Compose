@@ -3,14 +3,12 @@ package com.snusnu.vkapicompose.ui.theme.screens.home_screen
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
 
-sealed class HomeScreenState {
+sealed class CommentsScreenState {
 
-    object Initial: HomeScreenState()
-
-    data class Posts(val posts: List<FeedPost>): HomeScreenState()
+    object Initial: CommentsScreenState()
 
     data class Comments(
         val feedPost: FeedPost,
         val comments: List<PostComment>
-    ): HomeScreenState()
+    ): CommentsScreenState()
 }
