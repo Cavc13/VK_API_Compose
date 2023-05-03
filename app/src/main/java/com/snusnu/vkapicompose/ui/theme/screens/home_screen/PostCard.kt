@@ -19,14 +19,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.domain.FeedPostModel
+import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.StatisticItem
 import com.snusnu.vkapicompose.domain.StatisticType
 
 @Composable
 fun CardPost(
     modifier: Modifier = Modifier,
-    feedPostModel: FeedPostModel,
+    feedPost: FeedPost,
     onViewItemClickListener: (StatisticItem) -> Unit,
     onShareItemClickListener: (StatisticItem) -> Unit,
     onCommentItemClickListener: ( StatisticItem) -> Unit,
@@ -38,10 +38,10 @@ fun CardPost(
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            PostHeader(feedPostModel)
+            PostHeader(feedPost)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = feedPostModel.contentText,
+                text = feedPost.contentText,
                 color = MaterialTheme.colors.onPrimary
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -49,13 +49,13 @@ fun CardPost(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                painter = painterResource(id = feedPostModel.contentImageResId),
+                painter = painterResource(id = feedPost.contentImageResId),
                 contentDescription = "post image",
                 contentScale = ContentScale.FillWidth
             )
             Spacer(modifier = Modifier.height(8.dp))
             PostStatistics(
-                statistics = feedPostModel.statistics,
+                statistics = feedPost.statistics,
                 onViewItemClickListener = onViewItemClickListener,
                 onShareItemClickListener = onShareItemClickListener,
                 onCommentItemClickListener = onCommentItemClickListener,
@@ -67,7 +67,7 @@ fun CardPost(
 
 @Composable
 private fun PostHeader(
-    feedPost: FeedPostModel
+    feedPost: FeedPost
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),

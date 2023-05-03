@@ -1,5 +1,6 @@
 package com.snusnu.vkapicompose.ui.theme.screens.home_screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.snusnu.vkapicompose.MainViewModel
-import com.snusnu.vkapicompose.domain.FeedPostModel
+import com.snusnu.vkapicompose.domain.FeedPost
 
 @Composable
 fun HomeScreen(
@@ -32,7 +33,12 @@ fun HomeScreen(
             )
         }
         is HomeScreenState.Comments -> {
-            CommentScreen(feedPost = currentState.feedPost, comments = currentState.comments)
+            CommentScreen(feedPost = currentState.feedPost, comments = currentState.comments) {
+                mainViewModel.closeComments()
+            }
+            BackHandler {
+                mainViewModel.closeComments()
+            }
         }
         HomeScreenState.Initial -> {}
     }
@@ -41,7 +47,7 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun FeedPosts(
-    posts: List<FeedPostModel>,
+    posts: List<FeedPost>,
     mainViewModel: MainViewModel,
     paddingValues: PaddingValues
 ) {
@@ -55,10 +61,10 @@ private fun FeedPosts(
         ),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items = posts, key = { it.id }) { feedPostModel ->
+        items(items = posts, key = { it.id }) { feedPost ->
             val dismissState = rememberDismissState()
             if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-                mainViewModel.deleteFeedPost(feedPostModel)
+                mainViewModel.deleteFeedPost(feedPost)
             }
             SwipeToDismiss(
                 modifier = Modifier.animateItemPlacement(),
@@ -82,18 +88,18 @@ private fun FeedPosts(
                 }
             ) {
                 CardPost(
-                    feedPostModel = feedPostModel,
+                    feedPost = feedPost,
                     onViewItemClickListener = {
-                        mainViewModel.increaseCount(feedPostModel, it)
+                        mainViewModel.increaseCount(feedPost, it)
                     },
                     onShareItemClickListener = {
-                        mainViewModel.increaseCount(feedPostModel, it)
+                        mainViewModel.increaseCount(feedPost, it)
                     },
                     onCommentItemClickListener = {
-                        mainViewModel.increaseCount(feedPostModel, it)
+                        mainViewModel.showComments(feedPost)
                     },
                     onLikeItemClickListener = {
-                        mainViewModel.increaseCount(feedPostModel, it)
+                        mainViewModel.increaseCount(feedPost, it)
                     },
                 )
             }
