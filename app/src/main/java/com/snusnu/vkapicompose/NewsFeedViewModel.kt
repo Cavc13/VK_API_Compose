@@ -14,7 +14,8 @@ class NewsFeedViewModel : ViewModel() {
         repeat(10) {
             add(
                 FeedPost(
-                    id = it
+                    id = it,
+                    contentText = "content $it"
                 )
             )
         }
