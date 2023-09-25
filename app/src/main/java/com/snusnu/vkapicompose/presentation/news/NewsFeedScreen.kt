@@ -1,5 +1,7 @@
-package com.snusnu.vkapicompose.ui.theme.screens.home_screen
+package com.snusnu.vkapicompose.presentation.news
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,11 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.snusnu.vkapicompose.NewsFeedViewModel
 import com.snusnu.vkapicompose.domain.FeedPost
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun HomeScreen(
+fun NewsFeedScreen(
     paddingValues: PaddingValues,
     onCommentsClickListener: (FeedPost) -> Unit
 ) {
@@ -38,6 +40,7 @@ fun HomeScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun FeedPosts(
@@ -52,11 +55,14 @@ private fun FeedPosts(
             top = 16.dp,
             start = 8.dp,
             end = 8.dp,
-            bottom = 16.dp
+            bottom = 72.dp
         ),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items = posts, key = { it.id }) { feedPost ->
+        items(
+            items = posts,
+            key = { it.id }
+        ) { feedPost ->
             val dismissState = rememberDismissState()
             if (dismissState.isDismissed(DismissDirection.EndToStart)) {
                 newsFeedViewModel.deleteFeedPost(feedPost)
@@ -94,7 +100,7 @@ private fun FeedPosts(
                         onCommentsClickListener(feedPost)
                     },
                     onLikeItemClickListener = {
-                        newsFeedViewModel.increaseCount(feedPost, it)
+                        newsFeedViewModel.changeLikeStatus(feedPost)
                     },
                 )
             }

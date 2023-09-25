@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -64,4 +65,11 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
     implementation "com.google.code.gson:gson:2.10"
+    implementation "io.coil-kt:coil-compose:2.3.0"
+    implementation "com.vk:android-sdk-core:4.0.1"
+    implementation "com.vk:android-sdk-api:4.0.1"
+
+    //retrofit
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
 }

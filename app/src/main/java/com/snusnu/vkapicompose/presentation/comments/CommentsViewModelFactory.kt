@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose
+package com.snusnu.vkapicompose.presentation.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

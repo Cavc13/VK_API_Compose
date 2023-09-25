@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.ui.theme.screens.home_screen
+package com.snusnu.vkapicompose.presentation.comments
 
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
