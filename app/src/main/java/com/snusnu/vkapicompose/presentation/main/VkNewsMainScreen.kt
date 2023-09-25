@@ -1,8 +1,8 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
-package com.snusnu.vkapicompose.ui.theme.screens
+package com.snusnu.vkapicompose.presentation.main
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,9 +14,10 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.snusnu.vkapicompose.navigation.AppNavGraph
 import com.snusnu.vkapicompose.navigation.rememberNavigationState
-import com.snusnu.vkapicompose.ui.theme.screens.home_screen.CommentScreen
-import com.snusnu.vkapicompose.ui.theme.screens.home_screen.HomeScreen
+import com.snusnu.vkapicompose.presentation.comments.CommentScreen
+import com.snusnu.vkapicompose.presentation.news.NewsFeedScreen
 
+@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
@@ -63,7 +64,7 @@ fun MainScreen() {
         AppNavGraph(
             navHostController = navigationState.navHostController,
             newsFeedScreenContent = {
-                HomeScreen(
+                NewsFeedScreen(
                     paddingValues = paddingValues,
                     onCommentsClickListener = {
                         navigationState.navigateToComments(it)

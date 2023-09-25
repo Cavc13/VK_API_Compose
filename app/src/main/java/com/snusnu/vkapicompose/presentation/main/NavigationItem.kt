@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.ui.theme.screens
+package com.snusnu.vkapicompose.presentation.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite

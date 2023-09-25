@@ -1,11 +1,10 @@
-package com.snusnu.vkapicompose
+package com.snusnu.vkapicompose.presentation.comments
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
-import com.snusnu.vkapicompose.ui.theme.screens.home_screen.CommentsScreenState
 
 class CommentsViewModel(
     feedPost: FeedPost
