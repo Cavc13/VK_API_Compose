@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.snusnu.vkapicompose.data.repository.NewsFeedRepository
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.StatisticItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class NewsFeedViewModel(application: Application) : AndroidViewModel(application) {
@@ -30,6 +31,14 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
             val feedPosts = repository.loadRecommendations()
             _screenState.value = NewsFeedScreenState.Posts(feedPosts)
         }
+    }
+
+    fun loadNextRecommendations() {
+        _screenState.value = NewsFeedScreenState.Posts(
+            posts = repository.feedPosts,
+            nextDataIsLoading = true
+        )
+        loadRecommendations()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
