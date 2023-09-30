@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.ui.theme.DarkBlue
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
@@ -27,15 +29,17 @@ fun NewsFeedScreen(
     val newsFeedViewModel: NewsFeedViewModel = viewModel()
     val screenState = newsFeedViewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
 
-    when(val currentState = screenState.value) {
+    when (val currentState = screenState.value) {
         is NewsFeedScreenState.Posts -> {
             FeedPosts(
                 posts = currentState.posts,
                 newsFeedViewModel = newsFeedViewModel,
                 paddingValues = paddingValues,
+                nextDataIsLoading = currentState.nextDataIsLoading,
                 onCommentsClickListener = onCommentsClickListener
             )
         }
+
         NewsFeedScreenState.Initial -> {}
     }
 }
@@ -47,6 +51,7 @@ private fun FeedPosts(
     posts: List<FeedPost>,
     newsFeedViewModel: NewsFeedViewModel,
     paddingValues: PaddingValues,
+    nextDataIsLoading: Boolean,
     onCommentsClickListener: (FeedPost) -> Unit
 ) {
     LazyColumn(
@@ -55,7 +60,7 @@ private fun FeedPosts(
             top = 16.dp,
             start = 8.dp,
             end = 8.dp,
-            bottom = 72.dp
+            bottom = 16.dp
         ),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -103,6 +108,23 @@ private fun FeedPosts(
                         newsFeedViewModel.changeLikeStatus(feedPost)
                     },
                 )
+            }
+        }
+        item {
+            if (nextDataIsLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = DarkBlue)
+                }
+            } else {
+                SideEffect {
+                    newsFeedViewModel.loadNextRecommendations()
+                }
             }
         }
     }

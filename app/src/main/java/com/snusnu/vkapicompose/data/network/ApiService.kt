@@ -12,6 +12,12 @@ interface ApiService {
         @Query("access_token") token: String
     ): ResponseDto
 
+    @GET("newsfeed.getRecommended?v=5.131")
+    suspend fun loadRecommendations(
+        @Query("access_token") token: String,
+        @Query("start_from") startFrom :String
+    ): ResponseDto
+
     @GET("likes.add?v=5.131&type=post")
     suspend fun addLike(
         @Query("access_token") token: String,
