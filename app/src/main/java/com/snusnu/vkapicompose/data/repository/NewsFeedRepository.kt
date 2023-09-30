@@ -2,7 +2,6 @@ package com.snusnu.vkapicompose.data.repository
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.snusnu.vkapicompose.data.mapper.NewsFeedMapper
 import com.snusnu.vkapicompose.data.network.ApiFactory
@@ -41,6 +40,15 @@ class NewsFeedRepository(application: Application) {
         val posts = mapper.mapResponseToPosts(response)
         _feedPosts.addAll(posts)
         return feedPosts
+    }
+
+    suspend fun deletePost(feedPost: FeedPost) {
+        apiService.ignoreItem(
+            getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId =  feedPost.id
+        )
+        _feedPosts.remove(feedPost)
     }
 
     private fun getAccessToken(): String {

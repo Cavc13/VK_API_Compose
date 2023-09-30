@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.snusnu.vkapicompose.data.repository.NewsFeedRepository
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.StatisticItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class NewsFeedViewModel(application: Application) : AndroidViewModel(application) {
@@ -54,28 +53,6 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
         val currentState = screenState.value
         if (currentState !is NewsFeedScreenState.Posts) return
 
-//        val modifiedList = currentState.posts.toMutableList()
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            modifiedList.replaceAll { feedPostOld ->
-//                if (feedPost == feedPostOld) {
-//                    feedPostOld.copy(
-//                        statistics = feedPostOld.statistics.toMutableList().apply {
-//                            replaceAll { oldItem ->
-//                                if (oldItem == item) {
-//                                    oldItem.copy(count = oldItem.count + 1)
-//                                } else {
-//                                    oldItem
-//                                }
-//                            }
-//                        }
-//                    )
-//                } else {
-//                    feedPostOld
-//                }
-//            }
-//        }
-//        _screenState.value = NewsFeedScreenState.Posts(modifiedList)
-
         val oldPosts = currentState.posts.toMutableList()
         val oldStatistics = feedPost.statistics
         val newStatistics = oldStatistics.toMutableList().apply {
@@ -101,11 +78,10 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun deleteFeedPost(feedPost: FeedPost) {
-        val currentState = screenState.value
-        if (currentState !is NewsFeedScreenState.Posts) return
+        viewModelScope.launch {
+            repository.deletePost(feedPost)
+            _screenState.value = NewsFeedScreenState.Posts(repository.feedPosts)
+        }
 
-        val modifiedList = currentState.posts.toMutableList()
-        modifiedList.remove(feedPost)
-        _screenState.value = NewsFeedScreenState.Posts(modifiedList)
     }
 }
