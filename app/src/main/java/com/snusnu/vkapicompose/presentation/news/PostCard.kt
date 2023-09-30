@@ -29,8 +29,6 @@ import com.snusnu.vkapicompose.ui.theme.DarkRed
 fun CardPost(
     modifier: Modifier = Modifier,
     feedPost: FeedPost,
-    onViewItemClickListener: (StatisticItem) -> Unit,
-    onShareItemClickListener: (StatisticItem) -> Unit,
     onCommentItemClickListener: ( StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit
 ) {
@@ -58,8 +56,6 @@ fun CardPost(
             Spacer(modifier = Modifier.height(8.dp))
             PostStatistics(
                 statistics = feedPost.statistics,
-                onViewItemClickListener = onViewItemClickListener,
-                onShareItemClickListener = onShareItemClickListener,
                 onCommentItemClickListener = onCommentItemClickListener,
                 onLikeItemClickListener = onLikeItemClickListener,
                 isLiked = feedPost.isLiked
@@ -108,8 +104,6 @@ private fun PostHeader(
 @Composable
 private fun PostStatistics(
     statistics: List<StatisticItem>,
-    onViewItemClickListener: (StatisticItem) -> Unit,
-    onShareItemClickListener: (StatisticItem) -> Unit,
     onCommentItemClickListener: (StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit,
     isLiked: Boolean
@@ -121,10 +115,7 @@ private fun PostStatistics(
             val viewsItem = statistics.getItemByType(StatisticType.VIEWS)
             IconWithText(
                 iconResId = R.drawable.ic_eye,
-                text = formatStatisticCount(viewsItem.count),
-                onItemClickListener = {
-                    onViewItemClickListener(viewsItem)
-                }
+                text = formatStatisticCount(viewsItem.count)
             )
         }
         Row(
@@ -134,10 +125,7 @@ private fun PostStatistics(
             val shareItem = statistics.getItemByType(StatisticType.SHARES)
             IconWithText(
                 iconResId = R.drawable.ic_share,
-                text = formatStatisticCount(shareItem.count),
-                onItemClickListener = {
-                    onShareItemClickListener(shareItem)
-                }
+                text = formatStatisticCount(shareItem.count)
             )
             val commentItem = statistics.getItemByType(StatisticType.COMMENTS)
             IconWithText(
@@ -178,13 +166,19 @@ private fun List<StatisticItem>.getItemByType(type: StatisticType): StatisticIte
 private fun IconWithText(
     iconResId: Int,
     text: String,
-    onItemClickListener: () -> Unit,
+    onItemClickListener: (() -> Unit)? = null,
     tint: Color = MaterialTheme.colors.onSecondary
 ) {
-    Row(
-        modifier = Modifier.clickable {
+    val modifier = if (onItemClickListener == null) {
+        Modifier
+    } else {
+        Modifier.clickable {
             onItemClickListener()
-        },
+        }
+    }
+
+    Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
