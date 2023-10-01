@@ -1,7 +1,11 @@
 package com.snusnu.vkapicompose.data.mapper
 
 import com.snusnu.vkapicompose.data.model.ResponseDto
+import com.snusnu.vkapicompose.data.model.WallCommentsDTO
+import com.snusnu.vkapicompose.data.model.WallCommentProfileDTO
+import com.snusnu.vkapicompose.data.model.WallCommentContentDTO
 import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.PostComment
 import com.snusnu.vkapicompose.domain.StatisticItem
 import com.snusnu.vkapicompose.domain.StatisticType
 import java.text.SimpleDateFormat
@@ -24,9 +28,9 @@ class NewsFeedMapper {
                 id = post.id,
                 communityId = post.communityId,
                 communityName = group.name,
-                publicationDate = mapTimestampToDate(post.date * 1_000),
+                publicationDate = mapTimestampToDate(post.date),
                 communityImageUrl = group.imageUrl,
-                contentText = post.text ?: "",
+                contentText = post.text,
                 contentImageUrl = post.attachments?.firstOrNull()?.photo?.photoUrls?.lastOrNull()?.url,
                 statistics = listOf(
                     StatisticItem(type = StatisticType.LIKES, post.likes?.count ?: 0),
@@ -42,8 +46,32 @@ class NewsFeedMapper {
         return result
     }
 
+    fun mapWallCommentsResponseToPostComments(response: WallCommentsDTO) : List<PostComment> {
+        val commentsList: List<WallCommentContentDTO> = response.wallComments
+        val profilesList: List<WallCommentProfileDTO> = response.wallCommentProfiles
+        val postCommentsList = mutableListOf<PostComment>()
+
+        for(comment in commentsList) {
+            if (comment.textComment.isBlank()) continue
+            val author = profilesList.find {
+                it.idCommentProfile == comment.idOwnerComment
+            } ?: continue
+
+            val postComment = PostComment(
+                id = comment.id,
+                authorName = "${author.firstNameCommentProfile} ${author.lastNameCommentProfile}",
+                authorAvatarUrl = author.photoCommentProfile,
+                comment = comment.textComment,
+                publicationDate = mapTimestampToDate(comment.dateComment)
+            )
+            postCommentsList.add(postComment)
+        }
+
+        return postCommentsList
+    }
+
     private fun mapTimestampToDate(timestamp: Long): String {
-        val date = Date(timestamp)
+        val date = Date(timestamp * 1_000)
         return SimpleDateFormat("d MMMM yyyy, hh:mm", Locale.getDefault()).format(date)
     }
 }
