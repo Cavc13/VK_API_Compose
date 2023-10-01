@@ -2,6 +2,7 @@ package com.snusnu.vkapicompose.data.network
 
 import com.snusnu.vkapicompose.data.model.LikesCountResponseDto
 import com.snusnu.vkapicompose.data.model.ResponseDto
+import com.snusnu.vkapicompose.data.model.WallCommentResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -38,4 +39,11 @@ interface ApiService {
         @Query("owner_id") ownerId: Long,
         @Query("item_id") postId: Long
     ): LikesCountResponseDto
+
+    @GET("wall.getComments?v=5.131&extended=1&fields=photo_100")
+    suspend fun getWallComments(
+        @Query("access_token") token: String,
+        @Query("owner_id") ownerId: Long,
+        @Query("post_id") postId: Long
+    ): WallCommentResponseDto
 }

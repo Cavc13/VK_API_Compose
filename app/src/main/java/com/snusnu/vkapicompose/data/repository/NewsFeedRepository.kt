@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import com.snusnu.vkapicompose.data.mapper.NewsFeedMapper
 import com.snusnu.vkapicompose.data.network.ApiFactory
 import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.PostComment
 import com.snusnu.vkapicompose.domain.StatisticItem
 import com.snusnu.vkapicompose.domain.StatisticType
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
@@ -25,6 +26,16 @@ class NewsFeedRepository(application: Application) {
         get() = _feedPosts.toList()
 
     private var nextFrom: String? = null
+
+    suspend fun getWallComments(feedPost: FeedPost): List<PostComment> {
+        val response = apiService.getWallComments(
+            getAccessToken(),
+            feedPost.communityId,
+            feedPost.id
+        )
+
+        return mapper.mapWallCommentsResponseToPostComments(response.wallComments)
+    }
 
     suspend fun loadRecommendations(): List<FeedPost> {
         val startFrom = nextFrom

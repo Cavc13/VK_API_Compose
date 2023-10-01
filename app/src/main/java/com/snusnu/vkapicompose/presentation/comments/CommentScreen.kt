@@ -1,23 +1,26 @@
 package com.snusnu.vkapicompose.presentation.comments
 
-import androidx.compose.foundation.Image
+import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.snusnu.vkapicompose.R
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.domain.PostComment
-import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 
 @Composable
 fun CommentScreen(
@@ -26,7 +29,10 @@ fun CommentScreen(
 ) {
 
     val viewModel: CommentsViewModel = viewModel(
-        factory = CommentsViewModelFactory(feedPost)
+        factory = CommentsViewModelFactory(
+            LocalContext.current.applicationContext as Application,
+            feedPost
+        )
     )
     val screenState = viewModel.screenState.observeAsState(initial = CommentsScreenState.Initial)
     val currentState = screenState.value
@@ -35,7 +41,7 @@ fun CommentScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Comments for FeedPost Id: ${currentState.feedPost.id}, ${feedPost.contentText}")
+                        Text(text = stringResource(R.string.Comments_title))
                     },
                     navigationIcon = {
                         IconButton(onClick = {
@@ -84,15 +90,17 @@ fun CommentItem(
                 vertical = 4.dp
             )
     ) {
-        Image(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = comment.authorAvatarId),
+        AsyncImage(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape),
+            model =  comment.authorAvatarUrl,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(
-                text = "${comment.authorName} CommentId: ${comment.id}",
+                text = comment.authorName,
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 12.sp
             )
@@ -109,13 +117,5 @@ fun CommentItem(
                 fontSize = 12.sp
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewComment() {
-    VKAPIComposeTheme {
-        CommentItem(comment = PostComment(0))
     }
 }
