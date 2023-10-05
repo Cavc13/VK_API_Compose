@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.domain.FeedPost
-import com.snusnu.vkapicompose.domain.PostComment
+import com.snusnu.vkapicompose.domain.entity.FeedPost
+import com.snusnu.vkapicompose.domain.entity.PostComment
 
 @Composable
 fun CommentScreen(

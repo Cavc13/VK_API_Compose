@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.entity.FeedPost
 import com.snusnu.vkapicompose.ui.theme.DarkBlue
 
 @RequiresApi(Build.VERSION_CODES.N)

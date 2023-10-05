@@ -1,7 +1,7 @@
 package com.snusnu.vkapicompose.presentation.comments
 
-import com.snusnu.vkapicompose.domain.FeedPost
-import com.snusnu.vkapicompose.domain.PostComment
+import com.snusnu.vkapicompose.domain.entity.FeedPost
+import com.snusnu.vkapicompose.domain.entity.PostComment
 
 sealed class CommentsScreenState {
 

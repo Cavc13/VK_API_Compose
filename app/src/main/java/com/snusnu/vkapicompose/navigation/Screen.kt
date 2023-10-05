@@ -2,7 +2,7 @@ package com.snusnu.vkapicompose.navigation
 
 import android.net.Uri
 import com.google.gson.Gson
-import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.entity.FeedPost
 
 sealed class Screen(
     val route: String

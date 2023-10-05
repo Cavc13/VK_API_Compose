@@ -1,6 +1,6 @@
 package com.snusnu.vkapicompose.presentation.news
 
-import com.snusnu.vkapicompose.domain.FeedPost
+import com.snusnu.vkapicompose.domain.entity.FeedPost
 
 sealed class NewsFeedScreenState {
 

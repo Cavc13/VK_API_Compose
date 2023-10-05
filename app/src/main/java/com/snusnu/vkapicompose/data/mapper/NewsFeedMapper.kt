@@ -4,10 +4,10 @@ import com.snusnu.vkapicompose.data.model.ResponseDto
 import com.snusnu.vkapicompose.data.model.WallCommentsDTO
 import com.snusnu.vkapicompose.data.model.WallCommentProfileDTO
 import com.snusnu.vkapicompose.data.model.WallCommentContentDTO
-import com.snusnu.vkapicompose.domain.FeedPost
-import com.snusnu.vkapicompose.domain.PostComment
-import com.snusnu.vkapicompose.domain.StatisticItem
-import com.snusnu.vkapicompose.domain.StatisticType
+import com.snusnu.vkapicompose.domain.entity.FeedPost
+import com.snusnu.vkapicompose.domain.entity.PostComment
+import com.snusnu.vkapicompose.domain.entity.StatisticItem
+import com.snusnu.vkapicompose.domain.entity.StatisticType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
