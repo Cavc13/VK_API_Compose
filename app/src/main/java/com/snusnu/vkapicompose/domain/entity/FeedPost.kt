@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.domain
+package com.snusnu.vkapicompose.domain.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

@@ -8,7 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.snusnu.vkapicompose.domain.AuthState
+import com.snusnu.vkapicompose.domain.entity.AuthState
 import com.snusnu.vkapicompose.ui.theme.VKAPIComposeTheme
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope

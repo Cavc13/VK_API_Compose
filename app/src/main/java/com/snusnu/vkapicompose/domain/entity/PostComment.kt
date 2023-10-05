@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.domain
+package com.snusnu.vkapicompose.domain.entity
 
 data class PostComment(
     val id: Long,

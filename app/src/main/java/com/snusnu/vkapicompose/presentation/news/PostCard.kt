@@ -20,16 +20,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.snusnu.vkapicompose.R
-import com.snusnu.vkapicompose.domain.FeedPost
-import com.snusnu.vkapicompose.domain.StatisticItem
-import com.snusnu.vkapicompose.domain.StatisticType
+import com.snusnu.vkapicompose.domain.entity.FeedPost
+import com.snusnu.vkapicompose.domain.entity.StatisticItem
+import com.snusnu.vkapicompose.domain.entity.StatisticType
 import com.snusnu.vkapicompose.ui.theme.DarkRed
 
 @Composable
 fun CardPost(
     modifier: Modifier = Modifier,
     feedPost: FeedPost,
-    onCommentItemClickListener: ( StatisticItem) -> Unit,
+    onCommentItemClickListener: (StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit
 ) {
     Card(
