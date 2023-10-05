@@ -10,6 +10,7 @@ import com.snusnu.vkapicompose.domain.PostComment
 import com.snusnu.vkapicompose.domain.StatisticItem
 import com.snusnu.vkapicompose.domain.StatisticType
 import com.snusnu.vkapicompose.extentions.mergeWith
+import com.snusnu.vkapicompose.domain.AuthState
 import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,8 @@ import java.lang.IllegalStateException
 class NewsFeedRepository(application: Application) {
 
     private val storage = VKPreferencesKeyValueStorage(application)
-    private val token = VKAccessToken.restore(storage)
+    private val token
+        get() = VKAccessToken.restore(storage)
 
     private val apiService = ApiFactory.apiService
     private val mapper = NewsFeedMapper()
@@ -42,6 +44,8 @@ class NewsFeedRepository(application: Application) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val nextDataNeededEvents = MutableSharedFlow<Unit>(replay = 1)
     private val refreshedListFlow = MutableSharedFlow<List<FeedPost>>()
+    private val checkAuthStateEvents = MutableSharedFlow<Unit>(replay = 1)
+
     private val loadedListFlow = flow {
         nextDataNeededEvents.emit(Unit)
         nextDataNeededEvents.collect {
@@ -67,6 +71,24 @@ class NewsFeedRepository(application: Application) {
         true
     }.catch {
 
+    }
+
+    val authStateFlow = flow {
+        checkAuthStateEvents.emit(Unit)
+        checkAuthStateEvents.collect {
+            val currentToken = token
+            val isLogin = currentToken != null && currentToken.isValid
+            val authState= if (isLogin) AuthState.Authorized else AuthState.NotAuthorized
+            emit(authState)
+        }
+    }.stateIn(
+        coroutineScope,
+        SharingStarted.Lazily,
+        AuthState.Initial
+    )
+
+    suspend fun checkAuthState() {
+        checkAuthStateEvents.emit(Unit)
     }
 
     fun getWallComments(feedPost: FeedPost): Flow<List<PostComment>> = flow {

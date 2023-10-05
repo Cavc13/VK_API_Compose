@@ -1,4 +1,4 @@
-package com.snusnu.vkapicompose.presentation.main
+package com.snusnu.vkapicompose.domain
 
 sealed class AuthState {
     object Authorized: AuthState()

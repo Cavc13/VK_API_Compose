@@ -28,7 +28,10 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
 
     val screenState = recommendationsFlow
         .filter { it.isNotEmpty() }
-        .map { NewsFeedScreenState.Posts(it) as NewsFeedScreenState }
+        .map {
+            val result: NewsFeedScreenState  = NewsFeedScreenState.Posts(it)
+            result
+        }
         .onStart { emit(NewsFeedScreenState.Loading) }
         .mergeWith(loadNextDataFlow)
 
