@@ -14,10 +14,14 @@ import com.vk.api.sdk.VKPreferencesKeyValueStorage
 import com.vk.api.sdk.auth.VKAccessToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.lang.IllegalStateException
 
@@ -25,6 +29,15 @@ class NewsFeedRepository(application: Application) {
 
     private val storage = VKPreferencesKeyValueStorage(application)
     private val token = VKAccessToken.restore(storage)
+
+    private val apiService = ApiFactory.apiService
+    private val mapper = NewsFeedMapper()
+
+    private val _feedPosts = mutableListOf<FeedPost>()
+    private val feedPosts: List<FeedPost>
+        get() = _feedPosts.toList()
+
+    private var nextFrom: String? = null
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val nextDataNeededEvents = MutableSharedFlow<Unit>(replay = 1)
@@ -49,26 +62,24 @@ class NewsFeedRepository(application: Application) {
             _feedPosts.addAll(posts)
             emit(feedPosts)
         }
+    }.retry(2) {
+        delay(RETRY_TIMEOUT_MILLIS)
+        true
+    }.catch {
+
     }
 
-    private val apiService = ApiFactory.apiService
-    private val mapper = NewsFeedMapper()
-
-    private val _feedPosts = mutableListOf<FeedPost>()
-    private val feedPosts: List<FeedPost>
-        get() = _feedPosts.toList()
-
-    private var nextFrom: String? = null
-
-
-    suspend fun getWallComments(feedPost: FeedPost): List<PostComment> {
+    fun getWallComments(feedPost: FeedPost): Flow<List<PostComment>> = flow {
         val response = apiService.getWallComments(
             getAccessToken(),
             feedPost.communityId,
             feedPost.id
         )
 
-        return mapper.mapWallCommentsResponseToPostComments(response.wallComments)
+        emit(mapper.mapWallCommentsResponseToPostComments(response.wallComments))
+    }.retry {
+        delay(RETRY_TIMEOUT_MILLIS)
+        true
     }
 
     val recommendations: StateFlow<List<FeedPost>> = loadedListFlow
@@ -122,5 +133,9 @@ class NewsFeedRepository(application: Application) {
         val postIndex = _feedPosts.indexOf(feedPost)
         _feedPosts[postIndex] = newPost
         refreshedListFlow.emit(feedPosts)
+    }
+
+    companion object{
+        private const val RETRY_TIMEOUT_MILLIS = 3_000L
     }
 }

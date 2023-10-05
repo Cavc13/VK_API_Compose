@@ -2,12 +2,14 @@ package com.snusnu.vkapicompose.presentation.news
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.snusnu.vkapicompose.data.repository.NewsFeedRepository
 import com.snusnu.vkapicompose.domain.FeedPost
 import com.snusnu.vkapicompose.extentions.mergeWith
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -16,6 +18,9 @@ import kotlinx.coroutines.launch
 
 class NewsFeedViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        Log.d("exceptionHandler", "Иссключение поймано exceptionHandler")
+    }
     private val repository = NewsFeedRepository(application)
 
     private val recommendationsFlow = repository.recommendations
@@ -41,13 +46,13 @@ class NewsFeedViewModel(application: Application) : AndroidViewModel(application
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun changeLikeStatus(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.changeLikeStatus(feedPost)
         }
     }
 
     fun deleteFeedPost(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.deletePost(feedPost)
         }
 
