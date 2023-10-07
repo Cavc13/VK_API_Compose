@@ -1,18 +1,15 @@
 package com.snusnu.vkapicompose.presentation.comments
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.snusnu.vkapicompose.data.repository.NewsFeedRepositoryImpl
+import androidx.lifecycle.ViewModel
 import com.snusnu.vkapicompose.domain.entity.FeedPost
 import com.snusnu.vkapicompose.domain.usecases.GetWallCommentsUseCase
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CommentsViewModel(
-    application: Application,
-    feedPost: FeedPost
-): AndroidViewModel(application) {
-    private val repository = NewsFeedRepositoryImpl(application)
-    private val getWallCommentsUseCase = GetWallCommentsUseCase(repository)
+class CommentsViewModel @Inject constructor(
+    private val getWallCommentsUseCase: GetWallCommentsUseCase,
+    private val feedPost: FeedPost
+): ViewModel() {
 
     val screenState = getWallCommentsUseCase(feedPost)
         .map {

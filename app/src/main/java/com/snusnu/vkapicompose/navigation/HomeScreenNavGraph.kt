@@ -32,9 +32,7 @@ fun NavGraphBuilder.homeScreenNavGraph(
         ) {
             val feedPostJson = it.arguments?.getString(Screen.KEY_FEED_POST) ?: ""
             val feedPost = Gson().fromJson(feedPostJson, FeedPost::class.java)
-            commentsScreenContent(
-                feedPost
-            )
+            commentsScreenContent(feedPost)
         }
     }
 }

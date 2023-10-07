@@ -1,6 +1,5 @@
 package com.snusnu.vkapicompose.presentation.comments
 
-import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,10 +8,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,6 +20,7 @@ import coil.compose.AsyncImage
 import com.snusnu.vkapicompose.R
 import com.snusnu.vkapicompose.domain.entity.FeedPost
 import com.snusnu.vkapicompose.domain.entity.PostComment
+import com.snusnu.vkapicompose.presentation.getApplicationComponent
 
 @Composable
 fun CommentScreen(
@@ -28,13 +28,24 @@ fun CommentScreen(
     feedPost: FeedPost
 ) {
 
-    val viewModel: CommentsViewModel = viewModel(
-        factory = CommentsViewModelFactory(
-            LocalContext.current.applicationContext as Application,
-            feedPost
-        )
-    )
+    val component = getApplicationComponent()
+        .getCommentsScreenComponentFactory()
+        .create(feedPost)
+
+    val viewModel: CommentsViewModel = viewModel(factory = component.getViewModelFactory())
     val screenState = viewModel.screenState.collectAsState(initial = CommentsScreenState.Initial)
+
+    CommentsScreenContent(
+        screenState = screenState,
+        onBackPressed = onBackPressed
+    )
+}
+
+@Composable
+private fun CommentsScreenContent(
+    screenState: State<CommentsScreenState>,
+    onBackPressed: () -> Unit
+) {
     val currentState = screenState.value
     if (currentState is CommentsScreenState.Comments) {
         Scaffold(

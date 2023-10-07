@@ -1,10 +1,9 @@
 package com.snusnu.vkapicompose.data.repository
 
-import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.snusnu.vkapicompose.data.mapper.NewsFeedMapper
-import com.snusnu.vkapicompose.data.network.ApiFactory
+import com.snusnu.vkapicompose.data.network.ApiService
 import com.snusnu.vkapicompose.domain.entity.FeedPost
 import com.snusnu.vkapicompose.domain.entity.PostComment
 import com.snusnu.vkapicompose.domain.entity.StatisticItem
@@ -25,15 +24,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.lang.IllegalStateException
+import javax.inject.Inject
 
-class NewsFeedRepositoryImpl(application: Application): NewsFeedRepository {
+class NewsFeedRepositoryImpl  @Inject constructor(
+    private val storage: VKPreferencesKeyValueStorage,
+    private val apiService: ApiService,
+    private val mapper: NewsFeedMapper
+): NewsFeedRepository {
 
-    private val storage = VKPreferencesKeyValueStorage(application)
     private val token
         get() = VKAccessToken.restore(storage)
-
-    private val apiService = ApiFactory.apiService
-    private val mapper = NewsFeedMapper()
 
     private val _feedPosts = mutableListOf<FeedPost>()
     private val feedPosts: List<FeedPost>
