@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.snusnu.vkapicompose.domain.entity.FeedPost
+import com.snusnu.vkapicompose.presentation.getApplicationComponent
 import com.snusnu.vkapicompose.ui.theme.DarkBlue
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -26,9 +28,26 @@ fun NewsFeedScreen(
     paddingValues: PaddingValues,
     onCommentsClickListener: (FeedPost) -> Unit
 ) {
-    val newsFeedViewModel: NewsFeedViewModel = viewModel()
+    val component = getApplicationComponent()
+    val newsFeedViewModel: NewsFeedViewModel = viewModel(factory = component.getViewModelFactory())
     val screenState = newsFeedViewModel.screenState.collectAsState(NewsFeedScreenState.Initial)
 
+    NewsFeedScreenContent(
+        screenState,
+        paddingValues,
+        onCommentsClickListener,
+        newsFeedViewModel
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.N)
+@Composable
+private fun NewsFeedScreenContent(
+    screenState: State<NewsFeedScreenState>,
+    paddingValues: PaddingValues,
+    onCommentsClickListener: (FeedPost) -> Unit,
+    newsFeedViewModel: NewsFeedViewModel
+) {
     when (val currentState = screenState.value) {
         is NewsFeedScreenState.Posts -> {
             FeedPosts(

@@ -4,8 +4,9 @@ import com.snusnu.vkapicompose.domain.entity.FeedPost
 import com.snusnu.vkapicompose.domain.entity.PostComment
 import com.snusnu.vkapicompose.domain.repository.NewsFeedRepository
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class GetWallCommentsUseCase(
+class GetWallCommentsUseCase @Inject constructor(
     private val repository: NewsFeedRepository
 ) {
     operator fun invoke(feedPost: FeedPost): StateFlow<List<PostComment>> {
